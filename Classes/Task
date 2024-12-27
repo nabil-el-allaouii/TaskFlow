@@ -1,0 +1,91 @@
+<?php
+
+
+class Task extends DataHost
+{
+    private $task_id;
+    private $user_Id;
+    private $task_title;
+    private $task_description;
+    private $task_status;
+    private $task_type;
+    private $user_name;
+
+    public function __construct($TaskTitle, $TaskDescription, $TaskType, $UserName)
+    {
+        $this->user_name = $UserName;
+        $this->task_title = $TaskTitle;
+        $this->task_description = $TaskDescription;
+        $this->task_type = $TaskType;
+    }
+
+    public function CreateTask()
+    {
+        $db = $this->connect();
+        $checkUser = "SELECT user_id from users where user_name = :user_name";
+        $checkStmt = $db->prepare($checkUser);
+        $checkStmt->execute([
+            "user_name" => $this->user_name
+        ]);
+        $UserExist = $checkStmt->fetch();
+        if (!$UserExist) {
+            // die("Error: $this->user_name doesnt Exist!!");
+            $AddedUser = "INSERT into users(user_name) values(:user_name)";
+            $addingstmt = $db->prepare($AddedUser);
+            $addingstmt->execute([
+                ":user_name" => $this->user_name
+            ]);
+            $GettingUserId = "SELECT user_id from users where user_name = :username";
+            $GettingStmt = $db->prepare($GettingUserId);
+            $GettingStmt->execute([
+                "user_name" => $this->user_name
+            ]);
+            $fetchIdgot = $GettingStmt->fetch();
+
+            $this->user_Id = $fetchIdgot["user_id"];
+        } else {
+            $this->user_Id = $UserExist["user_id"];
+        }
+
+
+
+        $addTaskQuery = "INSERT INTO tasks (user_id,task_title,task_description,task_type) values(:user_id,:task_title,:task_description,:task_type)";
+        $stmt = $db->prepare($addTaskQuery);
+        $stmt->execute([
+            ":user_id" => $this->user_Id,
+            ":task_title" => $this->task_title,
+            ":task_description" => $this->task_description,
+            ":task_type" => $this->task_type
+        ]);
+    }
+
+    public function ShowTasks()
+    {
+        $db = $this->connect();
+        $showQuery = "SELECT * From tasks join users on users.user_id = tasks.user_id";
+        $Showstmt = $db->prepare($showQuery);
+        $Showstmt->execute();
+        $TasksData = $Showstmt->fetchAll();
+        return $TasksData;
+    }
+
+    public function ModifyStatus($new_status, $modifyId)
+    {
+        $db = $this->connect();
+        $ModifyQuery = "UPDATE tasks set task_status = :new_status where task_id = :modifiedID";
+        $modifystmt = $db->prepare($ModifyQuery);
+        $modifystmt->execute([
+            ":new_status" => $new_status,
+            ":modifiedID" => $modifyId
+        ]);
+    }
+
+    public static function ShowUsers()
+    {
+        $db = (new self("", "", "", ""))->connect();
+        $ShowUsersQuery = "SELECT * FROM users";
+        $ShowStmt = $db->prepare($ShowUsersQuery);
+        $ShowStmt->execute();
+        return $ShowStmt->fetchAll();
+    }
+}

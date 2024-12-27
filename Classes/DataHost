@@ -1,0 +1,35 @@
+
+<?php
+
+
+class DataHost
+{
+    private $db = "localhost";
+    private $dbName = "taskflow";
+    private $dbUser = "root";
+    private $dbPass = "hassizaio2010";
+
+    protected function connect()
+    {
+        try {
+            $pdo = new PDO(
+                "mysql:host={$this->db};dbname={$this->dbName}", 
+                $this->dbUser,
+                $this->dbPass,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                ]
+            );
+            return $pdo;
+        } catch (PDOException $e) {
+            die("Database connection failed: " . $e->getMessage());
+        }
+    }
+}
+
+
+
+
+
+?>
