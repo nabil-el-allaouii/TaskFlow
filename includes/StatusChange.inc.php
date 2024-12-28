@@ -9,4 +9,4 @@ if($_SERVER["REQUEST_METHOD"] = $_POST){
 $NewMOdify = new Task("","","","");
 $NewMOdify->ModifyStatus($task_status , $task_id);
 
-header("location: ../TaskFlow/index.php");
+header("location: ../html/index.php");

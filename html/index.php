@@ -112,6 +112,7 @@
                             foreach ($users as $user) {
                                 echo '<div class="bg-gray-100 p-4 rounded-lg shadow-md">';
                                 echo '<h3 class="text-lg font-semibold">' . htmlspecialchars($user['user_name']) . '</h3>';
+                                echo '<p class="text-sm text-gray-600">ID: ' . htmlspecialchars($user['user_id']) . '</p>';
                                 echo '</div>';
                             }
                             ?>
