@@ -10,6 +10,6 @@ if ($_SERVER["REQUEST_METHOD"] = $_POST) {
 
     $NewTask = new task($TaskTitle, $TaskDescription, $TaskType, $UserName);
     $NewTask->CreateTask();
-    header("location: ../TaskFlow/index.php");
+    header("location: ../html/index.php");
     exit();
 }
